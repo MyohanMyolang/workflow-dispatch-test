@@ -34,14 +34,6 @@ jobs:
           DEPLOY_BRANCH="deploy/${{ github.event.inputs.app }}"
           git checkout -b $DEPLOY_BRANCH
           
-      - name: Stage changes
-        run: |
-          git add .
-          
-      - name: Commit changes
-        run: |
-          git commit -m "Deploy ${{ github.event.inputs.app }} - Triggered by workflow_dispatch"
-          
       - name: Push to deploy branch
         run: |
-          git push origin "deploy/${{ github.event.inputs.app }}" --force
+          git push origin -f "deploy/${{ github.event.inputs.app }}"
