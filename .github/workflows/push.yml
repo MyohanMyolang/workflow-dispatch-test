@@ -7,10 +7,10 @@ on:
         required: true
         type: string
         options:
-          - 'lab'
-          - 'web'
-          - 'admin'
-          - 'store'
+        - 'lab'
+        - 'web'
+        - 'admin'
+        - 'store'
 
 jobs:
   push:
