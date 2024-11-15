@@ -32,4 +32,4 @@ jobs:
           
       - name: Push to deploy branch
         run: |
-          git push origin -f "deploy/${{ github.event.inputs.app }}"
+          git push origin "deploy/${{ github.event.inputs.app }}"
