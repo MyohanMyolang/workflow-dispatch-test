@@ -6,30 +6,35 @@ on:
       app:
         description: '배포할 브랜치 이름'
         required: true
-        type: string
+        type: choice
+        options:
+          - "lab"
+          - "web"
+          - "admin"
+          - "store"
 
 jobs:
   push:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Configure Git
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'github-actions@github.com'
-          
+
       - name: Create and switch to deploy branch
         run: |
           DEPLOY_BRANCH="deploy/${{ github.event.inputs.app }}"
           git checkout -b $DEPLOY_BRANCH
-          
+
       - name: Push to deploy branch
         run: |
-          git push origin "deploy/${{ github.event.inputs.app }}"
+          git push origin -f "deploy/${{ github.event.inputs.app }}"

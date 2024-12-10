@@ -1,0 +1,155 @@
+name: Slack Notification
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  send-slack-notification-main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Get current version
+        id: get_version
+        run: |
+          CURRENT_VERSION=$(jq -r '.version' package.json)
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+          echo "Current version: $CURRENT_VERSION"
+
+      - name: Send Slack Notification
+        uses: slackapi/slack-github-action@v1.26.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: ${{ secrets.SLACK_DEPLOY_CHANNEL_ID }}
+          payload: |
+            {
+              "text": "[sense:${{ env.CURRENT_VERSION }}] 릴리즈",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "`${{ env.CURRENT_VERSION }}` 버전이 배포되었습니다.\n\n*<https://github.com/SENSE-IM/sense-turbo/releases|[View Release Note]>*"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "emoji": true,
+                        "text": "웹 배포하기"
+                      },
+                      "confirm": {
+                        "title": {
+                          "type": "plain_text",
+                          "text": "라이브 배포"
+                        },
+                        "text": {
+                          "type": "mrkdwn",
+                          "text": "센스 웹 라이브 배포를 진행할까요?"
+                        },
+                        "confirm": {
+                          "type": "plain_text",
+                          "text": "배포"
+                        },
+                        "deny": {
+                          "type": "plain_text",
+                          "text": "취소"
+                        }
+                      },
+                      "value": "web"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "emoji": true,
+                        "text": "스토어 배포하기"
+                      },
+                      "confirm": {
+                        "title": {
+                          "type": "plain_text",
+                          "text": "라이브 배포"
+                        },
+                        "text": {
+                          "type": "mrkdwn",
+                          "text": "센스 스토어 라이브 배포를 진행할까요?"
+                        },
+                        "confirm": {
+                          "type": "plain_text",
+                          "text": "배포"
+                        },
+                        "deny": {
+                          "type": "plain_text",
+                          "text": "취소"
+                        }
+                      },
+                      "value": "store"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "emoji": true,
+                        "text": "어드민 배포하기"
+                      },
+                      "confirm": {
+                        "title": {
+                          "type": "plain_text",
+                          "text": "라이브 배포"
+                        },
+                        "text": {
+                          "type": "mrkdwn",
+                          "text": "센스 어드민 라이브 배포를 진행할까요?"
+                        },
+                        "confirm": {
+                          "type": "plain_text",
+                          "text": "배포"
+                        },
+                        "deny": {
+                          "type": "plain_text",
+                          "text": "취소"
+                        }
+                      },
+                      "value": "admin"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "emoji": true,
+                        "text": "랩 배포하기"
+                      },
+                      "confirm": {
+                        "title": {
+                          "type": "plain_text",
+                          "text": "라이브 배포"
+                        },
+                        "text": {
+                          "type": "mrkdwn",
+                          "text": "센스 랩 라이브 배포를 진행할까요?"
+                        },
+                        "confirm": {
+                          "type": "plain_text",
+                          "text": "배포"
+                        },
+                        "deny": {
+                          "type": "plain_text",
+                          "text": "취소"
+                        }
+                      },
+                      "value": "lab"
+                    }
+                  ]
+                }
+              ]
+            }
